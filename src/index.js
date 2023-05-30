@@ -1,9 +1,25 @@
-import app from './app.js'
+
 import { PORT } from './config.js'
+import express from 'express'
+import cors from 'cors';
 
-const cors = require('cors');
+import usersRoutes from './routes/users.routes.js'
 
-app.use(cors(corsOptions));
+const app = express();
+
+app.use(cors({
+    origin: '*'
+}));
 
 
-app.listen(PORT)
+
+app.use(express.json())
+
+app.use(usersRoutes);
+
+
+
+
+app.listen(PORT, () => {
+    console.log('Servidor backend iniciado en el puerto ', PORT);
+  });
