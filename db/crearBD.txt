@@ -1,0 +1,84 @@
+
+-- CREAR TABLA usuarios
+
+CREATE TABLE usuarios (
+  id INT PRIMARY KEY,
+  nombre VARCHAR(50),
+  apellido1 VARCHAR(50),
+  apellido2 VARCHAR(50),
+  correo VARCHAR(100),
+  contrasenya VARCHAR(255),
+  genero INT,
+  propietario INT,
+  edificio INT,
+  escalera INT,
+  piso INT,
+  letra CHAR(1),
+  admin INT
+);
+
+-- CREAR TABLA ranking_individual
+
+CREATE TABLE ranking_individual (
+  id_ranking_i INT PRIMARY KEY AUTO_INCREMENT,
+  id_usuario INT,
+  puntos INT,
+  tipo INT,
+  FOREIGN KEY (id_usuario) REFERENCES usuarios(id)
+);
+
+-- CREAR TABLA parejas
+
+CREATE TABLE parejas (
+  id_pareja INT PRIMARY KEY AUTO_INCREMENT,
+  id_usuario1 INT,
+  id_usuario2 INT,
+  FOREIGN KEY (id_usuario1) REFERENCES usuarios(id),
+  FOREIGN KEY (id_usuario2) REFERENCES usuarios(id),
+  UNIQUE (id_usuario1, id_usuario2)
+);
+
+-- CREAR TABLA ranking_parejas
+
+CREATE TABLE ranking_parejas (
+  id_ranking_p INT PRIMARY KEY AUTO_INCREMENT,
+  id_pareja INT,
+  puntos INT,
+  tipo INT,
+  FOREIGN KEY (id_pareja) REFERENCES parejas(id_pareja)
+);
+
+-- CREAR TABLA torneos
+
+CREATE TABLE torneos (
+  id_torneo INT PRIMARY KEY AUTO_INCREMENT,
+  nombre VARCHAR(100),
+  tipo INT,
+  fecha_ini DATE,
+  fecha_fin DATE,
+  puntos INT
+);
+
+-- CREAR TABLA inscripcion_torneo
+
+CREATE TABLE inscripcion_torneo (
+  id_torneo INT,
+  id_pareja INT,
+  pagado BOOLEAN,
+  PRIMARY KEY (id_torneo, id_pareja),
+  FOREIGN KEY (id_torneo) REFERENCES torneos(id_torneo),
+  FOREIGN KEY (id_pareja) REFERENCES parejas(id_pareja)
+);
+
+-- CREAR TABLA partidos
+
+CREATE TABLE partidos (
+  id_partido INT PRIMARY KEY AUTO_INCREMENT,
+  id_pareja1 INT,
+  id_pareja2 INT,
+  id_torneo INT,
+  fecha DATE,
+  FOREIGN KEY (id_pareja1) REFERENCES parejas(id_pareja),
+  FOREIGN KEY (id_pareja2) REFERENCES parejas(id_pareja),
+  FOREIGN KEY (id_torneo) REFERENCES torneos(id_torneo)
+);

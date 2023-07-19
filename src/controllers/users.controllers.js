@@ -9,7 +9,7 @@ export const loginUser = async (req, res) => {
 
     // Verificar si el usuario existe
     const [existingUsers] = await pool.query(
-      'SELECT * FROM users WHERE correo = ?',
+      'SELECT * FROM usuarios WHERE correo = ?',
       [correo]
     );
 
@@ -19,7 +19,6 @@ export const loginUser = async (req, res) => {
     }
 
     const user = existingUsers[0];
-    const userId = user.id;
 
     // Verificar la contraseña
     const passwordMatch = await bcrypt.compare(contrasenya, user.contrasenya);
@@ -29,12 +28,8 @@ export const loginUser = async (req, res) => {
       return res.status(400).send('Contraseña incorrecta.');
     }
 
-    const userIdForToken = {
-      id: userId
-    }
-
     // Generar token JWT
-    const token = jwt.sign(userIdForToken, 'secretKey', {expiresIn: '1d'});
+    const token = jwt.sign(user, 'secretKey', {expiresIn: '1d'});
     res.cookie('token', token)
 
     // Usuario y contraseña correctos
@@ -49,9 +44,16 @@ export const loginUser = async (req, res) => {
 };
 
 export const getUsers  =  async (req,res)=>{
-    const [rows] = await pool.query(
-        'SELECT * FROM users')
-    res.send({rows})
+  const authorization = req.get('authorization');
+  const decodedToken = getAuthorizationToken(authorization);
+
+  if(!decodedToken){
+      return res.status(401).json({ error: "token is missing or invalid" });
+  }
+
+  const [users] = await pool.query(
+      'SELECT * FROM usuarios')
+  res.send({users})
 };
 
 export const createUser = async (req, res) => {
@@ -74,7 +76,7 @@ export const createUser = async (req, res) => {
 
     // Verificar si el usuario ya existe
     const [existingUsers] = await pool.query(
-      'SELECT * FROM users WHERE correo = ?', [correo]
+      'SELECT * FROM usuarios WHERE correo = ?', [correo]
     );
     const hashedPassword = await bcrypt.hash(contrasenya, 10);
 

@@ -1,9 +1,10 @@
-
 import { PORT } from './config.js'
 import express from 'express'
 import cors from 'cors';
 import cookieParser from  'cookie-parser';
 import usersRoutes from './routes/users.routes.js'
+import matchesRoutes from './routes/matches.routes.js'
+import rankingRoutes from './routes/ranking.routes.js'
 
 const app = express();
 
@@ -19,6 +20,8 @@ app.use(express.json())
 app.use(cookieParser())
 
 app.use(usersRoutes);
+app.use(matchesRoutes);
+app.use(rankingRoutes);
 
 app.listen(PORT, () => {
     console.log('Servidor backend iniciado en el puerto ', PORT);
