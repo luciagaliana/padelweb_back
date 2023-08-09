@@ -2,7 +2,7 @@
 -- CREAR TABLA usuarios
 
 CREATE TABLE usuarios (
-  id INT PRIMARY KEY,
+  id INT PRIMARY KEY AUTO_INCREMENT,
   nombre VARCHAR(50),
   apellido1 VARCHAR(50),
   apellido2 VARCHAR(50),
@@ -17,13 +17,26 @@ CREATE TABLE usuarios (
   admin INT
 );
 
--- CREAR TABLA ranking_individual
+-- CREAR TABLAs ranking_individual
 
-CREATE TABLE ranking_individual (
+CREATE TABLE ranking_individualMasculino (
   id_ranking_i INT PRIMARY KEY AUTO_INCREMENT,
   id_usuario INT,
   puntos INT,
-  tipo INT,
+  FOREIGN KEY (id_usuario) REFERENCES usuarios(id)
+);
+
+CREATE TABLE ranking_individualFemenino (
+  id_ranking_i INT PRIMARY KEY AUTO_INCREMENT,
+  id_usuario INT,
+  puntos INT,
+  FOREIGN KEY (id_usuario) REFERENCES usuarios(id)
+);
+
+CREATE TABLE ranking_individualMixto (
+  id_ranking_i INT PRIMARY KEY AUTO_INCREMENT,
+  id_usuario INT,
+  puntos INT,
   FOREIGN KEY (id_usuario) REFERENCES usuarios(id)
 );
 
@@ -38,13 +51,26 @@ CREATE TABLE parejas (
   UNIQUE (id_usuario1, id_usuario2)
 );
 
--- CREAR TABLA ranking_parejas
+-- CREAR TABLAs ranking_parejas
 
-CREATE TABLE ranking_parejas (
+CREATE TABLE ranking_parejasMasculino (
   id_ranking_p INT PRIMARY KEY AUTO_INCREMENT,
   id_pareja INT,
   puntos INT,
-  tipo INT,
+  FOREIGN KEY (id_pareja) REFERENCES parejas(id_pareja)
+);
+
+CREATE TABLE ranking_parejasFemenino (
+  id_ranking_p INT PRIMARY KEY AUTO_INCREMENT,
+  id_pareja INT,
+  puntos INT,
+  FOREIGN KEY (id_pareja) REFERENCES parejas(id_pareja)
+);
+
+CREATE TABLE ranking_parejasMixto (
+  id_ranking_p INT PRIMARY KEY AUTO_INCREMENT,
+  id_pareja INT,
+  puntos INT,
   FOREIGN KEY (id_pareja) REFERENCES parejas(id_pareja)
 );
 
@@ -66,8 +92,8 @@ CREATE TABLE inscripcion_torneo (
   id_pareja INT,
   pagado BOOLEAN,
   PRIMARY KEY (id_torneo, id_pareja),
-  FOREIGN KEY (id_torneo) REFERENCES torneos(id_torneo),
-  FOREIGN KEY (id_pareja) REFERENCES parejas(id_pareja)
+  FOREIGN KEY (id_torneo) REFERENCES torneos(id_torneo) ON DELETE CASCADE,
+  FOREIGN KEY (id_pareja) REFERENCES parejas(id_pareja) ON DELETE CASCADE
 );
 
 -- CREAR TABLA partidos
@@ -78,7 +104,7 @@ CREATE TABLE partidos (
   id_pareja2 INT,
   id_torneo INT,
   fecha DATE,
-  FOREIGN KEY (id_pareja1) REFERENCES parejas(id_pareja),
-  FOREIGN KEY (id_pareja2) REFERENCES parejas(id_pareja),
-  FOREIGN KEY (id_torneo) REFERENCES torneos(id_torneo)
+  FOREIGN KEY (id_pareja1) REFERENCES parejas(id_pareja) ON DELETE CASCADE,
+  FOREIGN KEY (id_pareja2) REFERENCES parejas(id_pareja) ON DELETE CASCADE,
+  FOREIGN KEY (id_torneo) REFERENCES torneos(id_torneo) ON DELETE CASCADE
 );

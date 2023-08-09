@@ -1,0 +1,31 @@
+-- Crear el disparador para la tabla "usuarios" de ranking de genero
+
+DELIMITER //
+CREATE TRIGGER usuario_rankingGenero
+AFTER INSERT ON usuarios
+FOR EACH ROW
+BEGIN
+  IF NEW.genero = 0 THEN
+    INSERT INTO ranking_individualFemenino (id_usuario, puntos)
+    VALUES (NEW.id, 0);
+  ELSEIF NEW.genero = 1 THEN
+    INSERT INTO ranking_individualMasculino (id_usuario, puntos)
+    VALUES (NEW.id, 0);
+  END IF;
+END;
+//
+DELIMITER ;
+
+
+-- Crear el disparador para la tabla "usuarios" de ranking mixto
+
+DELIMITER //
+CREATE TRIGGER tr_insert_usuario
+AFTER INSERT ON usuarios
+FOR EACH ROW
+BEGIN
+  INSERT INTO ranking_individualMixto (id_usuario, puntos)
+  VALUES (NEW.id, 0);
+END;
+//
+DELIMITER ;
