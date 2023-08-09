@@ -1,0 +1,17 @@
+POST http://localhost:3001/users
+Content-Type: application/json
+{
+  "id": "2",
+  "nombre": "Miguel Ángel",
+  "apellido1": "Linares",
+  "apellido2": "Martínez",
+  "correo": "b",
+  "contrasenya": "b",
+  "genero": "1",
+  "propietario": "1",
+  "edificio": "1",
+  "escalera": "1",
+  "piso": "1",
+  "letra": "A",
+  "admin": "0"
+}
