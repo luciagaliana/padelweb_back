@@ -10,7 +10,6 @@ import bcrypt from 'bcrypt';
         if (authorization && authorization.toLowerCase().startsWith('bearer')) {
             const token = authorization.substring(7);
             try {
-                console.log("token", token)
                 const decodedToken = jwt.verify(token, "secretKey");
                 return decodedToken;
             } catch (error) {

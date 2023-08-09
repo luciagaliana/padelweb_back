@@ -4,7 +4,8 @@ import {
     createUser, 
     editUser, 
     deleteUser, 
-    loginUser, 
+    loginUser,
+    authUser, 
 } from '../controllers/users.controllers.js'
 import jwt from 'jsonwebtoken';
 
@@ -14,26 +15,7 @@ const router = Router()
 router.post('/login', loginUser); 
 
 //Ruta para autenticar al usuario
-router.get('/auth', async (req, res, next) => {
-    const authorization = req.get('authorization')
-
-    let token = null;
-
-    if (authorization && authorization.toLowerCase().startsWith('bearer')){
-        token = authorization.substring(7)
-    }
-
-    let decodedToken = null
-    try{
-        decodedToken = jwt.verify(token, "secretKey")
-    } catch {}
-
-    if (!token || !decodedToken){
-        return res.status(401).json({error: "token is missing or invalid"});
-    }
-
-    return res.status(200).json(decodedToken)
-});
+router.get('/auth', authUser);
 
 //Ruta para deslogear al usuario
 //router.get('/logout', logOutUser);

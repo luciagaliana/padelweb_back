@@ -1,7 +1,28 @@
 import {pool} from '../db.js'
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
+import { getAuthorizationToken } from './authorization_helper.js';
 
+export const authUser = async (req, res) => {
+  const authorization = req.get('authorization')
+    
+  let token = null;
+
+  if (authorization && authorization.toLowerCase().startsWith('bearer')){
+      token = authorization.substring(7)
+  }
+
+  let decodedToken = null
+  try{
+      decodedToken = jwt.verify(token, "secretKey")
+  } catch {}
+
+  if (!token || !decodedToken){
+      return res.status(401).json({error: "token is missing or invalid"});
+  }
+
+  return res.status(200).json(decodedToken)
+}
 
 export const loginUser = async (req, res) => {
   try {
@@ -33,7 +54,7 @@ export const loginUser = async (req, res) => {
     res.cookie('token', token)
 
     // Usuario y contraseña correctos
-    res.status(200).send('El incio de sesión se ha realizado correctamente.');
+    res.status(200).send(user);
 
   } catch (error) {
     console.log(error);
@@ -52,8 +73,8 @@ export const getUsers  =  async (req,res)=>{
   }
 
   const [users] = await pool.query(
-      'SELECT * FROM usuarios')
-  res.send({users})
+      'SELECT id, CONCAT(nombre, " ", apellido1, " ", apellido2) AS nombre_completo FROM usuarios;')
+  res.send(users)
 };
 
 export const createUser = async (req, res) => {
@@ -87,7 +108,7 @@ export const createUser = async (req, res) => {
 
     //Si todo ha ido bien insertamos el nuevo usuario en la tabla users de la bd
     const [rows] = await pool.query(
-      'INSERT INTO users (id, nombre, apellido1, apellido2, correo, contrasenya, genero, propietario, edificio, escalera, piso, letra, admin) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)',
+      'INSERT INTO usuarios (id, nombre, apellido1, apellido2, correo, contrasenya, genero, propietario, edificio, escalera, piso, letra, admin) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)',
       [id, nombre, apellido1, apellido2, correo, hashedPassword, genero, propietario, edificio, escalera, piso, letra, admin]
     );
     
@@ -96,6 +117,7 @@ export const createUser = async (req, res) => {
     res.send("Se ha registrado el nuevo usuario");
 
   } catch (error) {
+    console.log(error)
     return res.status(500).json({
         message:'Algo ha ido mal.'
     })
