@@ -326,6 +326,10 @@
 
         const idCouples = existingCouples.map((pareja) => pareja.id_pareja).join(',');
 
+        console.log("AAAAA", idCouples)
+        console.log("bbbb", tableNameCouple)
+
+
         let rankingUserCouple = [];
 
         try{
@@ -367,18 +371,29 @@
                 ORDER BY puntos DESC;`
             );
 
+            console.log("ccccc", responseRankingMixedCouple)
+            
+
             const rankingMixedCouple = responseRankingMixedCouple.map((obj) => ({
                 ...obj,
                 gender: "Mixto",
                 category: "Por parejas"
             }));
 
-            rankingUserCouple = rankingUserCouple.cocnat(rankingMixedCouple)
+            console.log("dddddd", rankingMixedCouple)
+
+
+            rankingUserCouple = rankingUserCouple.concat(rankingMixedCouple)
+
+            console.log("eeeeeee", rankingUserCouple)
+
         } catch(error){
             console.log("No tiene parejas de Mixto")
         }
 
         const rankingUser = rankingUserIndividual.concat(rankingUserCouple);
+
+        console.log("WWWWW", rankingUser)
 
         return res.send(rankingUser)
     }

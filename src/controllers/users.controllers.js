@@ -50,7 +50,11 @@ export const loginUser = async (req, res) => {
     }
 
     // Generar token JWT
-    const token = jwt.sign(user, 'secretKey', {expiresIn: '1d'});
+    const token = jwt.sign(
+      user, 
+      'secretKey',
+      {expiresIn: '1d'
+    });
     res.cookie('token', token)
 
     // Usuario y contraseña correctos

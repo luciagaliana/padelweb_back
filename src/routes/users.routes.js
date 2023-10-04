@@ -20,6 +20,7 @@ router.get('/auth', authUser);
 //Ruta para deslogear al usuario
 //router.get('/logout', logOutUser);
 
+//Ruta para obtener los usuarios
 router.get('/users', getUsers);
 
 router.post('/users', createUser)
